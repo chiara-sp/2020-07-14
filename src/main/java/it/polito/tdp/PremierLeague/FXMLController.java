@@ -5,9 +5,11 @@
 package it.polito.tdp.PremierLeague;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.PremierLeague.model.Model;
+import it.polito.tdp.PremierLeague.model.Team;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -35,7 +37,7 @@ public class FXMLController {
     private Button btnSimula; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbSquadra"
-    private ComboBox<?> cmbSquadra; // Value injected by FXMLLoader
+    private ComboBox<Team> cmbSquadra; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtN"
     private TextField txtN; // Value injected by FXMLLoader
@@ -49,15 +51,50 @@ public class FXMLController {
     @FXML
     void doClassifica(ActionEvent event) {
 
+    	txtResult.clear();
+    	Team team= cmbSquadra.getValue();
+    	if(team ==null) {
+    		txtResult.appendText("selezioanre una squadra");
+    		return;
+    	}
+    	List<Team> peggiori= model.peggiori(team);
+    	txtResult.appendText("Lista delle squadre peggiori: \n");
+    	for(Team t: peggiori) {
+    		txtResult.appendText(t.toString()+ " "+(team.getPunteggio()-t.getPunteggio())+ "\n");
+    	}
+    	List<Team> migliori= model.migliori(team);
+    	txtResult.appendText("\nLista delle squadre migliori: \n");
+    	for(Team t: migliori) {
+    		txtResult.appendText(t.toString()+ " "+(t.getPunteggio()-team.getPunteggio())+ "\n");
+    	}
+    	
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
 
+    	txtResult.clear();
+    	model.creaGrafo();
+    	txtResult.appendText("Grafo creato!\n");
+    	txtResult.appendText("#vertici: "+model.numVertici()+ "\n");
+    	txtResult.appendText("#archi: "+model.numArchi()+"\n");
+    	
     }
 
     @FXML
     void doSimula(ActionEvent event) {
+    	
+    	txtResult.clear();
+    	model.creaGrafo();
+    	Integer n= Integer.parseInt(txtX.getText());
+    	Integer x = Integer.parseInt(txtX.getText());
+    	if(n==null || x==null) {
+    		txtResult.appendText("impostare parametri n e x");
+    		return;
+    	}
+    	model.simula(n, x);
+    	txtResult.appendText("Media reporter per partita: "+model.mediaReporter()+ "\n");
+    	txtResult.appendText("Numero criticità: "+ model.criticita());
 
     }
 
@@ -74,5 +111,6 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	cmbSquadra.getItems().addAll(model.getTeams());
     }
 }

@@ -86,7 +86,8 @@ public class PremierLeagueDAO {
 	public List<Match> listAllMatches(){
 		String sql = "SELECT m.MatchID, m.TeamHomeID, m.TeamAwayID, m.teamHomeFormation, m.teamAwayFormation, m.resultOfTeamHome, m.date, t1.Name, t2.Name   "
 				+ "FROM Matches m, Teams t1, Teams t2 "
-				+ "WHERE m.TeamHomeID = t1.TeamID AND m.TeamAwayID = t2.TeamID";
+				+ "WHERE m.TeamHomeID = t1.TeamID AND m.TeamAwayID = t2.TeamID "
+				+ "order by m.date";
 		List<Match> result = new ArrayList<Match>();
 		Connection conn = DBConnect.getConnection();
 
@@ -109,6 +110,35 @@ public class PremierLeagueDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	public void setPunteggio(Team team) {
+		String sql="select `TeamHomeID`, `ResultOfTeamHome` as r "
+				+ "from matches "
+				+ "where `TeamHomeID`=?";
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, team.getTeamID());
+			ResultSet res = st.executeQuery();
+			while (res.next()) {
+
+				
+				int punteggio_temp= res.getInt("r");
+				if(punteggio_temp==1)
+					team.setPunteggio(team.getPunteggio()+3);
+				else if(punteggio_temp==0)
+					team.setPunteggio(team.getPunteggio()+1);
+
+			}
+			conn.close();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
 		}
 	}
 	

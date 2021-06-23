@@ -17,6 +17,8 @@ public class TestDao {
 		System.out.println(dao.listAllActions());
 		System.out.println("Matches:");
 		System.out.println(dao.listAllMatches());
+		
+		
 	}
 
 }

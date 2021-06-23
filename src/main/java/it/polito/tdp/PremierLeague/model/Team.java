@@ -1,13 +1,15 @@
 package it.polito.tdp.PremierLeague.model;
 
-public class Team {
+public class Team implements Comparable<Team> {
 	Integer teamID;
 	String name;
+	int punteggio;
 
 	public Team(Integer teamID, String name) {
 		super();
 		this.teamID = teamID;
 		this.name = name;
+		punteggio=0;
 	}
 	
 	public Integer getTeamID() {
@@ -24,6 +26,14 @@ public class Team {
 	}
 	
 	
+
+	public int getPunteggio() {
+		return punteggio;
+	}
+
+	public void setPunteggio(int punteggio) {
+		this.punteggio = punteggio;
+	}
 
 	@Override
 	public String toString() {
@@ -53,6 +63,12 @@ public class Team {
 		} else if (!teamID.equals(other.teamID))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(Team o) {
+		// TODO Auto-generated method stub
+		return this.name.compareTo(o.name);
 	}
 	
 }
